@@ -22,9 +22,6 @@ class App extends React.Component<AppProps, AppState> {
   componentDidMount() {
     console.log("componentDidMount");
     // Simula uma atualização depois de 3 segundos
-    setTimeout(() => {
-      this.setState({ remetente: "novo remetente" });
-    }, 3000);
   }
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
