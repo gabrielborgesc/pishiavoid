@@ -20,35 +20,56 @@ class App extends React.Component<AppProps, AppState> {
   }  
 
   componentDidMount() {
-    console.log("componentDidMount");
+    // console.log("componentDidMount");
     // Simula uma atualização depois de 3 segundos
   }
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
     console.log("componentDidUpdate")
-    if (prevState.remetente !== this.state.remetente) {
-      console.log("componentDidUpdate: remetente mudou para", this.state.remetente);
-    }
-  }  
+    // if (prevState.remetente !== this.state.remetente) {
+    //   console.log("componentDidUpdate: remetente mudou para", this.state.remetente);
+    // }
+  }
+
+  // shouldRender = (): boolean => {
+  //   const renderStatusLabel = "renderStatus";
+  //   let renderStatus = sessionStorage.getItem(renderStatusLabel)
+  //   console.log("renderStatus: ", renderStatus)
+  //   if(renderStatus && renderStatus === "true"){
+  //     return true
+  //   }
+  //   return false
+  // }
 
   render() {
-    return (
-      <div className="App">
-        <div
-          id="phishiavoid-info"
-          style={{
-            backgroundColor: "#333",
-            color: "white",
-            padding: "8px",
-            borderRadius: "8px",
-            fontSize: "14px",
-            margin: "10px",
-          }}
-        >
-          {this.props.remetente
-            ? `Remetente: ${this.props.remetente}`
-            : "Analisando remetente..."}
+
+    const renderBody = () => {
+
+      return (
+        <div className="App">
+          <div
+            id="phishiavoid-info"
+            style={{
+              backgroundColor: "#333",
+              color: "white",
+              padding: "8px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              margin: "10px",
+            }}
+          >
+            {this.props.remetente
+              ? `Remetente: ${this.props.remetente}`
+              : "Analisando remetente..."}
+          </div>
         </div>
+      );
+    };
+
+
+    return (
+      <div >
+        {renderBody()}
       </div>
     );
   }
