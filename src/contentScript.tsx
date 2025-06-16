@@ -64,8 +64,8 @@ if (!document.getElementById(rootDivId)) {
     right: '20px',
     zIndex: '9999',
     backgroundColor: 'green',
-    width: '200px',
-    height: '200px',
+    width: '20rem',
+    height: '20rem',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
     borderRadius: '8px',
     cursor: 'move', // permite arrastar
