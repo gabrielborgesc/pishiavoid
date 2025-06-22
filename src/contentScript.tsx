@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
@@ -7,15 +6,8 @@ const sessionStorageClickMostrarMaisLabel = 'clickToCaptureSender'
 
 const rootDivId = 'pishiavoid-root';
 
-// function getSenderEmail(): string | null {
-// //   const emailContainer = document.querySelector('div.adn.ads');
-// //   if (!emailContainer) return null;
+function getEmailFromHeader(): string | null {
 
-//   const senderSpan = document.querySelector('span.go') as HTMLSpanElement | null;
-//   console.log("senderSpan: ", senderSpan)
-//   return senderSpan?.getAttribute('email') || null;
-// }
-function getSenderEmail(): string | null {
   const senderSpan = document.querySelector('span.go') as HTMLSpanElement | null;
 
   if (senderSpan) {
@@ -24,31 +16,73 @@ function getSenderEmail(): string | null {
     
     // Regex para identificar e-mail no texto
     const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-    // console.log("caputrando email!")
+
+    if (match) {
+      // console.log("deu match!")
+      let retorno = match[0]
+      return retorno; // retorna o e-mail encontrado no texto
+    }
   
-    return match ? match[0] : null;
+  }
+  
+  return null
+
+}
+
+function getEmailFromDetails(): string | null {
+
+  // Procura a linha que começa com "de:"
+  const deRow = Array.from(document.querySelectorAll('tr.ajv')).find(row => {
+    const label = row.querySelector('td.gG span.gI')?.textContent?.trim().toLowerCase();
+    return label === "de:";
+  });
+
+  if (deRow){
+    // Dentro da linha, procura o span com atributo `email`
+    const senderSpan = deRow.querySelector('span[email]') as HTMLSpanElement | null;
+    if (senderSpan){
+      let attr = senderSpan.getAttribute('email')
+      return attr;
+    }
 
   }
-  else{
 
-    // Caso contrário, tenta clicar na seta para expandir os detalhes
-    const expandButton = document.querySelector('div[aria-label="Mostrar detalhes"]') as HTMLDivElement | null;
+  return null
 
-    let jaClicou = sessionStorage.getItem(sessionStorageClickMostrarMaisLabel) === 'true'
+}
 
-    if (expandButton && !jaClicou) {
-      // console.log("Clicando para expandir detalhes do remetente...");
+function abreDialogMostrarMais(): void {
+  // Caso contrário, tenta clicar na seta para expandir os detalhes
+  const expandButton = document.querySelector('div[aria-label="Mostrar detalhes"]') as HTMLDivElement | null;
+
+  let jaClicou = sessionStorage.getItem(sessionStorageClickMostrarMaisLabel) === 'true'
+
+  if (expandButton && !jaClicou) {
+    expandButton.click();
+    sessionStorage.setItem(sessionStorageClickMostrarMaisLabel, 'true')
+    setTimeout(() => {
       expandButton.click();
-      sessionStorage.setItem(sessionStorageClickMostrarMaisLabel, 'true')
-      setTimeout(() => {
-        expandButton.click();
-      }, 100)
-    }    
+    }, 100)
+  }
+}
 
-    // console.log("email não explícito")
-    return null
+function getSenderEmail(): string | null {
+
+  let emailFromHeader = getEmailFromHeader()
+
+  if(emailFromHeader){
+    return emailFromHeader
   }
 
+  let emailFromDetails = getEmailFromDetails()
+  if(emailFromDetails){
+    return emailFromDetails
+  }
+  
+  abreDialogMostrarMais()
+
+  return null
+  
 }
 
 function observeEmailOpening(rootDiv: HTMLDivElement) {
