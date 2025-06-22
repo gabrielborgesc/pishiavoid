@@ -10,6 +10,8 @@ type AppState = {
   // remetente?: string;
 };
 
+const sessionStorageCallApiLabel = 'callApi'
+
 // class App extends Component<AppProps> {
 class App extends React.Component<AppProps, AppState> {
 
@@ -21,16 +23,23 @@ class App extends React.Component<AppProps, AppState> {
   }  
 
   componentDidMount() {
-    // console.log("componentDidMount");
+    this.runMount()
     // Simula uma atualização depois de 3 segundos
   }
-
-  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
-    console.log("componentDidUpdate")
-    // if (prevState.remetente !== this.state.remetente) {
-    //   console.log("componentDidUpdate: remetente mudou para", this.state.remetente);
-    // }
+  
+  runMount(){
+    if(!sessionStorage.getItem(sessionStorageCallApiLabel) && this.props.remetente){
+      console.log("deve chamar API para o remetente: ", this.props.remetente);
+      sessionStorage.setItem(sessionStorageCallApiLabel, 'true')
+    }
   }
+
+  // componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+  //   console.log("componentDidUpdate")
+  //   // if (prevState.remetente !== this.state.remetente) {
+  //   //   console.log("componentDidUpdate: remetente mudou para", this.state.remetente);
+  //   // }
+  // }
 
   constroiMensagemLinks = () => {
     let linksMessage = `Links presentes no email:\n`;

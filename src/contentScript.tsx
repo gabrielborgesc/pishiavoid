@@ -2,7 +2,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 
 const sessionStorageClickMostrarMaisLabel = 'clickToCaptureSender'
-
+const sessionStorageBackgroundColorLabel = 'backgroundColor'
+const sessionStorageCallApiLabel = 'callApi'
 
 const rootDivId = 'pishiavoid-root';
 
@@ -86,12 +87,15 @@ function getSenderEmail(): string | null {
 }
 
 function observeEmailOpening(rootDiv: HTMLDivElement) {
-    
+  
+    rootDiv.style.backgroundColor = getBackgroundColor()
+
     run(rootDiv);
     
     const container = document.querySelector('div.adn.ads');
     if (!container){
         sessionStorage.removeItem(sessionStorageClickMostrarMaisLabel)
+        sessionStorage.removeItem(sessionStorageCallApiLabel)
         rootDiv.style.display = 'none';   
         return;
     } 
@@ -134,6 +138,19 @@ function extractLinksFromEmailBody(): string[] {
   return links;
 }
 
+function getBackgroundColor(): string {
+
+  let backgroundColor = sessionStorage.getItem(sessionStorageBackgroundColorLabel)
+  if(backgroundColor){
+    return backgroundColor;
+  }
+  let defaultColor = 'green'
+  sessionStorage.setItem(sessionStorageBackgroundColorLabel, defaultColor)
+  
+  return defaultColor
+
+}
+
 function run(rootDiv: HTMLDivElement) {
   document.body.appendChild(rootDiv);
   const root = ReactDOM.createRoot(rootDiv);
@@ -141,7 +158,7 @@ function run(rootDiv: HTMLDivElement) {
   let linksList = extractLinksFromEmailBody()
   root.render(
     <App
-      remetente={remetente || "Remetente não encontrado"}
+      remetente={remetente || ""}
       linksList={linksList}
     />
   );
@@ -156,7 +173,10 @@ if (!document.getElementById(rootDivId)) {
     top: '50px',
     right: '20px',
     zIndex: '9999',
-    backgroundColor: 'green',
+    // backgroundColor: 'green',
+    // backgroundColor: 'red',
+    // backgroundColor: 'orange',
+    backgroundColor: getBackgroundColor(),
     width: '20rem',
     height: '20rem',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
