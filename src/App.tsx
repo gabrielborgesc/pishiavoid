@@ -42,10 +42,10 @@ class App extends React.Component<AppProps, AppState> {
   // }
 
   constroiMensagemLinks = () => {
-    let linksMessage = `Links presentes no email:\n`;
+    let linksMessage = `Links presentes no email:\n\n`;
 
     this.props.linksList?.forEach(link => {
-      linksMessage += `- ${link}\n`;
+      linksMessage += `- ${link}\n\n`;
     });
 
     return linksMessage;
