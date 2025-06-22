@@ -1,5 +1,8 @@
 import React from "react";
 import "./App.css";
+import * as contactService from './ContactService';
+
+const sessionStorageBackgroundColorLabel = 'backgroundColor'
 
 type AppProps = {
   remetente?: string; // opcional — pode ser omitido
@@ -7,39 +10,62 @@ type AppProps = {
 };
 
 type AppState = {
-  // remetente?: string;
+  unsavedContact?: boolean;
+  callApi?: boolean;
 };
-
-const sessionStorageCallApiLabel = 'callApi'
 
 // class App extends Component<AppProps> {
 class App extends React.Component<AppProps, AppState> {
 
   constructor(props: any){
+    // console.log("constructor!")
     super(props)
-    // this.state = {
-    //   remetente: props.remetente,
-    // };
+
+    this.state ={
+      unsavedContact: false,
+      callApi: false,
+    }
+
   }  
 
   componentDidMount() {
+    // console.log("componentDidMount")
     this.runMount()
-    // Simula uma atualização depois de 3 segundos
-  }
-  
-  runMount(){
-    if(!sessionStorage.getItem(sessionStorageCallApiLabel) && this.props.remetente){
-      console.log("deve chamar API para o remetente: ", this.props.remetente);
-      sessionStorage.setItem(sessionStorageCallApiLabel, 'true')
-    }
   }
 
-  // componentDidUpdate(prevProps: AppProps, prevState: AppState) {
-  //   console.log("componentDidUpdate")
-  //   // if (prevState.remetente !== this.state.remetente) {
-  //   //   console.log("componentDidUpdate: remetente mudou para", this.state.remetente);
-  //   // }
-  // }
+  componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    // console.log("componentDidUpdate")
+  }
+  
+  runMount = () => {
+
+    if(!this.state.callApi && this.props.remetente){
+      console.log("deve chamar API para o remetente: ", this.props.remetente);
+      this.setState({callApi: true})
+
+      contactService.getContact(this.props.remetente).then(async contact => {
+        if (contact) {
+          console.log("contato encontrado: ", contact)
+          sessionStorage.setItem(sessionStorageBackgroundColorLabel, 'green')
+        } else {
+          console.log("contato NÃO encontrado:", contact);
+          sessionStorage.setItem(sessionStorageBackgroundColorLabel, 'orange')
+          await this.setState({unsavedContact: true})
+          console.log("state: ", this.state)
+          // contactService.saveContact(this.props.remetente!, 'trusted');
+        }
+
+        contactService.findSimilarContacts(this.props.remetente!).then(similars => {
+          console.log("contatos similares: ", similars)
+          if (similars.length > 0) {
+            // console.log("Sender looks similar to:", similars.map(s => s.email));
+          }
+        });
+      });
+
+    }
+
+  }
 
   constroiMensagemLinks = () => {
     let linksMessage = `Links presentes no email:\n\n`;
@@ -73,6 +99,115 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
 
+    // const renderUnsavedContactButtons = () => {
+    //   return (
+    //     <>
+    //         <button
+    //           // onClick={handleSave}
+    //           title="Salvar como confiável"
+    //           style={{
+    //             backgroundColor: "#2ecc71",
+    //             border: "none",
+    //             borderRadius: "50%",
+    //             width: "32px",
+    //             height: "32px",
+    //             cursor: "pointer",
+    //             fontSize: "18px",
+    //             color: "white",
+    //             display: "flex",
+    //             alignItems: "center",
+    //             justifyContent: "center",
+    //             padding: 0,
+    //           }}
+    //         >
+    //         ✅
+    //         </button>
+    //         <button
+    //           // onClick={handleBlock}
+    //           title="Bloquear contato"
+    //           style={{
+    //             // marginLeft: '10px',
+    //             backgroundColor: "#e74c3c",
+    //             border: "none",
+    //             borderRadius: "50%",
+    //             width: "32px",
+    //             height: "32px",
+    //             cursor: "pointer",
+    //             fontSize: "18px",
+    //             color: "white",
+    //             display: "flex",
+    //             alignItems: "center",
+    //             justifyContent: "center",
+    //             padding: 0,
+    //           }}
+    //         >
+    //         ⛔
+    //         </button>
+    //     </>
+    //   )
+    // }
+
+    const renderUnsavedContactButtons = () => {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            marginTop: "8px"
+          }}
+        >
+          <button
+            // onClick={handleSave}
+            title="Salvar como confiável"
+            style={{
+              backgroundColor: "#2ecc71",
+              border: "none",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              fontSize: "18px",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 0,
+            }}
+          >
+            ✅
+          </button>
+          <button
+            // onClick={handleBlock}
+            title="Bloquear contato"
+            style={{
+              backgroundColor: "#e74c3c",
+              border: "none",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              fontSize: "18px",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 0,
+            }}
+          >
+            ⛔
+          </button>
+        </div>
+      );
+    };
+
+
+    const renderButtons = () => {
+      if(this.state.unsavedContact){
+        return renderUnsavedContactButtons()
+      }
+    }
+
     const renderLinks = () => {
       if (this.props.linksList) {
         return (
@@ -103,6 +238,7 @@ class App extends React.Component<AppProps, AppState> {
       return (
         <div className="App">
             {renderRemetente()}
+            {renderButtons()}
             {renderLinks()}
         </div>
       );

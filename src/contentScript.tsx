@@ -3,7 +3,8 @@ import App from './App';
 
 const sessionStorageClickMostrarMaisLabel = 'clickToCaptureSender'
 const sessionStorageBackgroundColorLabel = 'backgroundColor'
-const sessionStorageCallApiLabel = 'callApi'
+const sessionStorageShouldRenderUILabel = 'shouldRender'
+const sessionStorageIsRenderingUILabel = 'isRendering'
 
 const rootDivId = 'pishiavoid-root';
 
@@ -95,11 +96,13 @@ function observeEmailOpening(rootDiv: HTMLDivElement) {
     const container = document.querySelector('div.adn.ads');
     if (!container){
         sessionStorage.removeItem(sessionStorageClickMostrarMaisLabel)
-        sessionStorage.removeItem(sessionStorageCallApiLabel)
+        sessionStorage.removeItem(sessionStorageShouldRenderUILabel)
+        sessionStorage.removeItem(sessionStorageIsRenderingUILabel)
         rootDiv.style.display = 'none';   
         return;
     } 
 
+    sessionStorage.setItem(sessionStorageShouldRenderUILabel, 'true')
     rootDiv.style.display = 'block';
 
 
@@ -156,12 +159,24 @@ function run(rootDiv: HTMLDivElement) {
   const root = ReactDOM.createRoot(rootDiv);
   let remetente = getSenderEmail()
   let linksList = extractLinksFromEmailBody()
-  root.render(
-    <App
-      remetente={remetente || ""}
-      linksList={linksList}
-    />
-  );
+
+  let shouldRender = sessionStorage.getItem(sessionStorageShouldRenderUILabel)
+  let isRendering = sessionStorage.getItem(sessionStorageIsRenderingUILabel)
+
+
+  if(shouldRender === 'true' && !isRendering){
+    // console.log()
+    root.render(
+      <App
+        remetente={remetente || ""}
+        linksList={linksList}
+      />
+    );
+
+    sessionStorage.setItem(sessionStorageIsRenderingUILabel, 'true')
+
+  }
+
 }
 
 if (!document.getElementById(rootDivId)) {
