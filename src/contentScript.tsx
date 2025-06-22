@@ -225,4 +225,5 @@ if (!document.getElementById(rootDivId)) {
   setInterval(() => {
     observeEmailOpening(rootDiv);
   }, 100);
+  
 }
