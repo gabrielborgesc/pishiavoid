@@ -86,7 +86,6 @@ function getSenderEmail(): string | null {
 }
 
 function observeEmailOpening(rootDiv: HTMLDivElement) {
-    // console.log("iniciada função observeEmailOpening 26");
     
     run(rootDiv);
     
@@ -102,12 +101,50 @@ function observeEmailOpening(rootDiv: HTMLDivElement) {
 
 }
 
+function getEmailBodyContainer(): HTMLElement | null {
+  return document.querySelector('div.a3s.aiL') as HTMLElement | null;
+}
+
+function extractLinksFromEmailBody(): string[] {
+  const bodyContainer = getEmailBodyContainer();
+  if (!bodyContainer) return [];
+
+  const links: string[] = [];
+
+  // Captura links explícitos
+  const anchorTags = bodyContainer.querySelectorAll('a[href]');
+  anchorTags.forEach((a) => {
+    const href = a.getAttribute('href');
+    if (href) links.push(href);
+  });
+
+  // Captura botões com onclick que redireciona
+  const clickableElements = bodyContainer.querySelectorAll('[onclick]');
+  clickableElements.forEach((el) => {
+    const onclick = el.getAttribute('onclick');
+    if (onclick && /location\.href\s*=\s*['"]([^'"]+)['"]/.test(onclick)) {
+      const match = onclick.match(/['"]([^'"]+)['"]/);
+      if (match && match[1]) links.push(match[1]);
+    }
+  });
+
+  // Possível melhoria futura: elementos com `data-href`, etc.
+
+  // console.log("links encontrados: ", links)
+  return links;
+}
+
 function run(rootDiv: HTMLDivElement) {
   document.body.appendChild(rootDiv);
   const root = ReactDOM.createRoot(rootDiv);
   let remetente = getSenderEmail()
-  // console.log("remetente encontrado: ", remetente)
-  root.render(<App remetente={remetente || "Remetente não encontrado"} />);
+  let linksList = extractLinksFromEmailBody()
+  root.render(
+    <App
+      remetente={remetente || "Remetente não encontrado"}
+      linksList={linksList}
+    />
+  );
 }
 
 if (!document.getElementById(rootDivId)) {
