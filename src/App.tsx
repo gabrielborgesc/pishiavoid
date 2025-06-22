@@ -1,6 +1,8 @@
 import React from "react";
 import "./App.css";
 import * as contactService from './ContactService';
+import { Button } from 'primereact/button';
+        
 
 const sessionStorageBackgroundColorLabel = 'backgroundColor'
 
@@ -77,6 +79,11 @@ class App extends React.Component<AppProps, AppState> {
     return linksMessage;
   };
 
+  handleSave = () => {
+    console.log("ueee")
+    // console.log("save contact ", this.props.remetente)
+  }
+
   render() {
 
     const renderRemetente = () => {
@@ -99,104 +106,76 @@ class App extends React.Component<AppProps, AppState> {
       }
     }
 
-    // const renderUnsavedContactButtons = () => {
-    //   return (
-    //     <>
-    //         <button
-    //           // onClick={handleSave}
-    //           title="Salvar como confiável"
-    //           style={{
-    //             backgroundColor: "#2ecc71",
-    //             border: "none",
-    //             borderRadius: "50%",
-    //             width: "32px",
-    //             height: "32px",
-    //             cursor: "pointer",
-    //             fontSize: "18px",
-    //             color: "white",
-    //             display: "flex",
-    //             alignItems: "center",
-    //             justifyContent: "center",
-    //             padding: 0,
-    //           }}
-    //         >
-    //         ✅
-    //         </button>
-    //         <button
-    //           // onClick={handleBlock}
-    //           title="Bloquear contato"
-    //           style={{
-    //             // marginLeft: '10px',
-    //             backgroundColor: "#e74c3c",
-    //             border: "none",
-    //             borderRadius: "50%",
-    //             width: "32px",
-    //             height: "32px",
-    //             cursor: "pointer",
-    //             fontSize: "18px",
-    //             color: "white",
-    //             display: "flex",
-    //             alignItems: "center",
-    //             justifyContent: "center",
-    //             padding: 0,
-    //           }}
-    //         >
-    //         ⛔
-    //         </button>
-    //     </>
-    //   )
-    // }
 
     const renderUnsavedContactButtons = () => {
+      return(
+        <Button
+          label="Salvar Contato"
+          icon="pi pi-check"
+          onClick={this.handleSave}
+        />
+      )
+    }
+
+    const renderUnsavedContactButtonsOld = () => {
       return (
         <div
           style={{
             display: "flex",
             justifyContent: "center",
             gap: "10px",
-            marginTop: "8px"
+            marginTop: "8px",
           }}
         >
-          <button
-            // onClick={handleSave}
-            title="Salvar como confiável"
-            style={{
-              backgroundColor: "#2ecc71",
-              border: "none",
-              borderRadius: "50%",
-              width: "32px",
-              height: "32px",
-              cursor: "pointer",
-              fontSize: "18px",
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 0,
-            }}
-          >
-            ✅
-          </button>
-          <button
-            // onClick={handleBlock}
-            title="Bloquear contato"
-            style={{
-              backgroundColor: "#e74c3c",
-              border: "none",
-              borderRadius: "50%",
-              width: "32px",
-              height: "32px",
-              cursor: "pointer",
-              fontSize: "18px",
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 0,
-            }}
-          >
-            ⛔
-          </button>
+          <div className="tooltip-wrapper">
+            <button
+              onClick={this.handleSave}
+              title="Salvar Contato"
+              style={{
+                backgroundColor: "#2ecc71",
+                border: "none",
+                borderRadius: "50%",
+                width: "32px",
+                height: "32px",
+                cursor: "pointer",
+                fontSize: "18px",
+                color: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 0,
+              }}
+              aria-label="Salvar como confiável"
+            >
+              {/* ✅ */}
+            </button>
+            {/* <div className="tooltip">Salvar como confiável</div> */}
+          </div>
+
+          <div className="tooltip-wrapper">
+            <button
+              // onClick={handleBlock}
+              title="Bloquear Contato"
+              style={{
+                backgroundColor: "#e74c3c",
+                border: "none",
+                borderRadius: "50%",
+                width: "32px",
+                height: "32px",
+                cursor: "pointer",
+                fontSize: "18px",
+                color: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 0,
+              }}
+              aria-label="Bloquear contato"
+            >
+              {/* ⛔ */}
+            </button>
+            {/* <div className="tooltip">Bloquear contato</div> */}
+          </div>
         </div>
       );
     };
