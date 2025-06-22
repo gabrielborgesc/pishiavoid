@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import "./App.css";
 
 type AppProps = {
@@ -30,16 +30,6 @@ class App extends React.Component<AppProps, AppState> {
     //   console.log("componentDidUpdate: remetente mudou para", this.state.remetente);
     // }
   }
-
-  // shouldRender = (): boolean => {
-  //   const renderStatusLabel = "renderStatus";
-  //   let renderStatus = sessionStorage.getItem(renderStatusLabel)
-  //   console.log("renderStatus: ", renderStatus)
-  //   if(renderStatus && renderStatus === "true"){
-  //     return true
-  //   }
-  //   return false
-  // }
 
   render() {
 

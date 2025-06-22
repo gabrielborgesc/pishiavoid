@@ -15,33 +15,47 @@ const rootDivId = 'pishiavoid-root';
 function getSenderEmail(): string | null {
   const senderSpan = document.querySelector('span.go') as HTMLSpanElement | null;
 
-  if (!senderSpan) return null;
+  if (senderSpan) {
+    // Tenta extrair o e-mail do texto interno (ignorando os <span aria-hidden>)
+    const text = senderSpan.textContent || "";
+  
+    // Regex para identificar e-mail no texto
+    const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  
+    return match ? match[0] : null;
 
-  // Tenta extrair o e-mail do texto interno (ignorando os <span aria-hidden>)
-  const text = senderSpan.textContent || "";
+  }
+  else{
 
-  // Regex para identificar e-mail no texto
-  const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    // Caso contrário, tenta clicar na seta para expandir os detalhes
+    const expandButton = document.querySelector('div[aria-label="Mostrar detalhes"]') as HTMLDivElement | null;
 
-  return match ? match[0] : null;
+    if (expandButton) {
+      // console.log("Clicando para expandir detalhes do remetente...");
+      expandButton.click();
+      setTimeout(() => {
+        expandButton.click();
+      }, 100)
+    }    
+
+    // console.log("email não explícito")
+    return null
+  }
+
 }
 
 function observeEmailOpening(rootDiv: HTMLDivElement) {
-    console.log("iniciada função observeEmailOpening 25");
+    // console.log("iniciada função observeEmailOpening 26");
     
     run(rootDiv);
     
-    const renderStatusLabel = "renderStatus";
-    
     const container = document.querySelector('div.adn.ads');
     if (!container){
-        sessionStorage.setItem(renderStatusLabel, "false");
         rootDiv.style.display = 'none';   
         return;
     } 
 
     rootDiv.style.display = 'block';
-    sessionStorage.setItem(renderStatusLabel, "true");
 
 
 }
@@ -50,7 +64,7 @@ function run(rootDiv: HTMLDivElement) {
   document.body.appendChild(rootDiv);
   const root = ReactDOM.createRoot(rootDiv);
   let remetente = getSenderEmail()
-  console.log("remetente encontrado: ", remetente)
+  // console.log("remetente encontrado: ", remetente)
   root.render(<App remetente={remetente || "Remetente não encontrado"} />);
 }
 
@@ -108,8 +122,8 @@ if (!document.getElementById(rootDivId)) {
 
   rootDiv.style.display = 'none';
 
-  // Observa mudanças a cada 10 segundos
+  // Observa mudanças a cada 100ms
   setInterval(() => {
     observeEmailOpening(rootDiv);
-  }, 1000);
+  }, 100);
 }
