@@ -85,8 +85,12 @@ class App extends React.Component<AppProps, AppState> {
               borderRadius: "8px",
               fontSize: "14px",
               margin: "10px",
-              whiteSpace: "pre-wrap", // <-- ESSENCIAL PARA '\n' FUNCIONAR
-            }}
+              whiteSpace: "pre-wrap",       //<-- ESSENCIAL PARA '\n' FUNCIONAR
+              wordBreak: "break-all",       // <- quebra palavras grandes como URLs
+              overflowWrap: "break-word",   // <- quebra em espaços permitidos
+              maxHeight: "15rem",           // <- limite vertical com scroll
+              overflowY: "auto",            // <- scroll se passar do limite
+            }}            
           >
             {this.constroiMensagemLinks()}
           </div>
