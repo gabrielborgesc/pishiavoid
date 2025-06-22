@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
+const sessionStorageClickMostrarMaisLabel = 'clickToCaptureSender'
+
+
 const rootDivId = 'pishiavoid-root';
 
 // function getSenderEmail(): string | null {
@@ -18,9 +21,10 @@ function getSenderEmail(): string | null {
   if (senderSpan) {
     // Tenta extrair o e-mail do texto interno (ignorando os <span aria-hidden>)
     const text = senderSpan.textContent || "";
-  
+    
     // Regex para identificar e-mail no texto
     const match = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    // console.log("caputrando email!")
   
     return match ? match[0] : null;
 
@@ -30,9 +34,12 @@ function getSenderEmail(): string | null {
     // Caso contrário, tenta clicar na seta para expandir os detalhes
     const expandButton = document.querySelector('div[aria-label="Mostrar detalhes"]') as HTMLDivElement | null;
 
-    if (expandButton) {
+    let jaClicou = sessionStorage.getItem(sessionStorageClickMostrarMaisLabel) === 'true'
+
+    if (expandButton && !jaClicou) {
       // console.log("Clicando para expandir detalhes do remetente...");
       expandButton.click();
+      sessionStorage.setItem(sessionStorageClickMostrarMaisLabel, 'true')
       setTimeout(() => {
         expandButton.click();
       }, 100)
@@ -51,6 +58,7 @@ function observeEmailOpening(rootDiv: HTMLDivElement) {
     
     const container = document.querySelector('div.adn.ads');
     if (!container){
+        sessionStorage.removeItem(sessionStorageClickMostrarMaisLabel)
         rootDiv.style.display = 'none';   
         return;
     } 
