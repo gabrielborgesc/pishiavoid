@@ -1,21 +1,18 @@
-A simple Hello World Chrome extension using React. 
+## PhishiAvoid
 
-# Getting Started with Create React App
+PhishiAvoid is a lightweight and effective extension for Gmail that helps you avoid phishing attacks by identifying trusted senders and blocking suspicious contacts.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Key Features:**
+- Automatically detects the sender’s email when opening messages in Gmail.
+- Analyzes and lists all links present in the email body for your full control.
+- Allows you to save contacts as “Trusted” or “Blocked” to customize your security.
+- Alerts you about senders with similar email addresses that may be impersonating legitimate contacts.
+   Simple and discreet interface, providing quick and easy access right inside Gmail.
 
-## Available Scripts
+**Why use PhishiAvoid?**
+Phishing is one of the most common cyber attacks aimed at stealing your credentials and personal data. With PhishiAvoid, you get an extra layer of protection directly in your browser, increasing your confidence when opening emails and clicking links.
 
-In the project directory, you can run:
+**How does it work?**
+The extension monitors the open email in Gmail, extracts the sender and links, and offers tools to easily manage your contacts. We use intelligent algorithms to detect possible identity spoofing attempts via similar email addresses.
 
-### `npm run build`
-bundle the extension.
-
-### `npm run watch`
-bundle the extension with interactive watch mode.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Install now and browse your email more safely!**
