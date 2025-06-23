@@ -1,4 +1,4 @@
-export type ContactType = 'trusted' | 'blocked';
+export type ContactType = 'trusted' | 'blocked' | 'unsaved';
 
 export interface Contact {
   email: string;

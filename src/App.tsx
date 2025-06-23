@@ -5,6 +5,9 @@ import { Button } from 'primereact/button';
         
 
 const sessionStorageBackgroundColorLabel = 'backgroundColor'
+const trusted = 'trusted'
+const blocked = 'blocked'
+const unsaved = 'unsaved'
 
 type AppProps = {
   remetente?: string; // opcional — pode ser omitido
@@ -12,7 +15,7 @@ type AppProps = {
 };
 
 type AppState = {
-  unsavedContact?: boolean;
+  contactStatus?: string;
   callApi?: boolean;
 };
 
@@ -24,7 +27,7 @@ class App extends React.Component<AppProps, AppState> {
     super(props)
 
     this.state ={
-      unsavedContact: false,
+      contactStatus: unsaved,
       callApi: false,
     }
 
@@ -32,7 +35,9 @@ class App extends React.Component<AppProps, AppState> {
 
   componentDidMount() {
     // console.log("componentDidMount")
-    this.runMount()
+    if(!this.state.callApi && this.props.remetente){
+      this.runMount()
+    }
   }
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
@@ -41,24 +46,21 @@ class App extends React.Component<AppProps, AppState> {
   
   runMount = () => {
 
-    if(!this.state.callApi && this.props.remetente){
-      console.log("deve chamar API para o remetente: ", this.props.remetente);
+    if(this.props.remetente){
+      // console.log("deve chamar API para o remetente: ", this.props.remetente);
       this.setState({callApi: true})
 
       contactService.getContact(this.props.remetente).then(async contact => {
         if (contact) {
-          console.log("contato encontrado: ", contact)
-          sessionStorage.setItem(sessionStorageBackgroundColorLabel, 'green')
+          sessionStorage.setItem(sessionStorageBackgroundColorLabel, contact.type === trusted ? 'green' : 'red')
+          await this.setState({contactStatus: contact.type})
         } else {
-          console.log("contato NÃO encontrado:", contact);
           sessionStorage.setItem(sessionStorageBackgroundColorLabel, 'orange')
-          await this.setState({unsavedContact: true})
-          console.log("state: ", this.state)
-          // contactService.saveContact(this.props.remetente!, 'trusted');
+          await this.setState({contactStatus: unsaved})
         }
 
         contactService.findSimilarContacts(this.props.remetente!).then(similars => {
-          console.log("contatos similares: ", similars)
+          // console.log("contatos similares: ", similars)
           if (similars.length > 0) {
             // console.log("Sender looks similar to:", similars.map(s => s.email));
           }
@@ -80,8 +82,30 @@ class App extends React.Component<AppProps, AppState> {
   };
 
   handleSave = () => {
-    console.log("ueee")
-    // console.log("save contact ", this.props.remetente)
+    contactService.saveContact(this.props.remetente!, trusted);
+
+    setTimeout(() => 
+      this.runMount(),
+      500
+    )
+  }
+
+  handleBlock = () => {
+    contactService.saveContact(this.props.remetente!, blocked);
+
+    setTimeout(() => 
+      this.runMount(),
+      500
+    )
+  }
+
+  handleDelete = () => {
+    contactService.deleteContact(this.props.remetente!);
+
+    setTimeout(() => 
+      this.runMount(),
+      500
+    )
   }
 
   render() {
@@ -107,14 +131,66 @@ class App extends React.Component<AppProps, AppState> {
     }
 
 
-    const renderUnsavedContactButtonsOld = () => {
-      return(
-        <Button
-          label="Salvar Contato"
-          icon="pi pi-check"
-          onClick={this.handleSave}
-        />
+    const renderButton = (title: string, color: string, icon: any, action: any) => {
+      return (
+          <div className="tooltip-wrapper">
+            <button
+              onClick={action}
+              title={title}
+              style={{
+                backgroundColor: color,
+                border: "none",
+                borderRadius: "50%",
+                width: "32px",
+                height: "32px",
+                cursor: "pointer",
+                fontSize: "18px",
+                color: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 0,
+              }}
+              aria-label={title}
+            >
+              {icon}
+            </button>
+            {/* <div className="tooltip">Salvar como confiável</div> */}
+          </div>        
       )
+    }
+
+    const renderBlockedContactButtons = () => {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            marginTop: "8px",
+          }}
+        >
+          {renderButton("Desbloquear", "#2980b9", '🔓', this.handleDelete)}
+
+        </div>        
+      )
+    }
+
+    const renderTrustedContactButton = () => {
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "10px",
+            marginTop: "8px",
+          }}
+        >
+
+          {renderButton("Remover Contato", "#e74c3c", "⛔", this.handleDelete)}
+
+        </div>        
+      )      
     }
 
     const renderUnsavedContactButtons = () => {
@@ -127,63 +203,23 @@ class App extends React.Component<AppProps, AppState> {
             marginTop: "8px",
           }}
         >
-          <div className="tooltip-wrapper">
-            <button
-              onClick={this.handleSave}
-              title="Salvar Contato"
-              style={{
-                backgroundColor: "#2ecc71",
-                border: "none",
-                borderRadius: "50%",
-                width: "32px",
-                height: "32px",
-                cursor: "pointer",
-                fontSize: "18px",
-                color: "white",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 0,
-              }}
-              aria-label="Salvar como confiável"
-            >
-              ✅
-            </button>
-            {/* <div className="tooltip">Salvar como confiável</div> */}
-          </div>
 
-          <div className="tooltip-wrapper">
-            <button
-              // onClick={handleBlock}
-              title="Bloquear Contato"
-              style={{
-                backgroundColor: "#e74c3c",
-                border: "none",
-                borderRadius: "50%",
-                width: "32px",
-                height: "32px",
-                cursor: "pointer",
-                fontSize: "18px",
-                color: "white",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 0,
-              }}
-              aria-label="Bloquear contato"
-            >
-              ⛔
-            </button>
-            {/* <div className="tooltip">Bloquear contato</div> */}
-          </div>
+          {renderButton("Salvar Contato", "#2ecc71", '✅', this.handleSave)}
+          {renderButton("Bloquear Contato", "#e74c3c", "⛔", this.handleBlock)}
+
         </div>
       );
     };
 
 
     const renderButtons = () => {
-      if(this.state.unsavedContact){
-        return renderUnsavedContactButtons()
+      switch(this.state.contactStatus){
+        case unsaved:
+          return renderUnsavedContactButtons()
+        case trusted:
+          return renderTrustedContactButton()
+        case blocked:
+          return renderBlockedContactButtons()
       }
     }
 
