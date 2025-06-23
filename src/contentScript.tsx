@@ -89,23 +89,22 @@ function getSenderEmail(): string | null {
 
 function observeEmailOpening(rootDiv: HTMLDivElement) {
   
-    rootDiv.style.backgroundColor = getBackgroundColor()
-
-    run(rootDiv);
-    
-    const container = document.querySelector('div.adn.ads');
-    if (!container){
-        sessionStorage.removeItem(sessionStorageClickMostrarMaisLabel)
-        sessionStorage.removeItem(sessionStorageShouldRenderUILabel)
-        sessionStorage.removeItem(sessionStorageIsRenderingUILabel)
-        rootDiv.style.display = 'none';   
-        return;
+  
+  const container = document.querySelector('div.adn.ads');
+  if(container){
+      rootDiv.style.backgroundColor = getBackgroundColor()
+      rootDiv.style.display = 'block';
+      run(rootDiv);
+      sessionStorage.setItem(sessionStorageShouldRenderUILabel, 'true')
+    }
+    else{
+      sessionStorage.removeItem(sessionStorageClickMostrarMaisLabel)
+      sessionStorage.removeItem(sessionStorageShouldRenderUILabel)
+      sessionStorage.removeItem(sessionStorageIsRenderingUILabel)
+      rootDiv.style.display = 'none';   
+      return;
     } 
-
-    sessionStorage.setItem(sessionStorageShouldRenderUILabel, 'true')
-    rootDiv.style.display = 'block';
-
-
+    
 }
 
 function getEmailBodyContainer(): HTMLElement | null {
@@ -180,6 +179,9 @@ function run(rootDiv: HTMLDivElement) {
 }
 
 if (!document.getElementById(rootDivId)) {
+
+  // console.log("main code")
+
   const rootDiv = document.createElement('div');
   rootDiv.id = rootDivId;
 
@@ -239,6 +241,6 @@ if (!document.getElementById(rootDivId)) {
   // Observa mudanças a cada 100ms
   setInterval(() => {
     observeEmailOpening(rootDiv);
-  }, 100);
+  }, 500);
   
 }

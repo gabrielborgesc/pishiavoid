@@ -107,7 +107,7 @@ class App extends React.Component<AppProps, AppState> {
     }
 
 
-    const renderUnsavedContactButtons = () => {
+    const renderUnsavedContactButtonsOld = () => {
       return(
         <Button
           label="Salvar Contato"
@@ -117,7 +117,7 @@ class App extends React.Component<AppProps, AppState> {
       )
     }
 
-    const renderUnsavedContactButtonsOld = () => {
+    const renderUnsavedContactButtons = () => {
       return (
         <div
           style={{
@@ -147,7 +147,7 @@ class App extends React.Component<AppProps, AppState> {
               }}
               aria-label="Salvar como confiável"
             >
-              {/* ✅ */}
+              ✅
             </button>
             {/* <div className="tooltip">Salvar como confiável</div> */}
           </div>
@@ -172,7 +172,7 @@ class App extends React.Component<AppProps, AppState> {
               }}
               aria-label="Bloquear contato"
             >
-              {/* ⛔ */}
+              ⛔
             </button>
             {/* <div className="tooltip">Bloquear contato</div> */}
           </div>
