@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 
 const sessionStorageClickMostrarMaisLabel = 'clickToCaptureSender'
-const sessionStorageBackgroundColorLabel = 'backgroundColor'
 const sessionStorageShouldRenderUILabel = 'shouldRender'
 const sessionStorageIsRenderingUILabel = 'isRendering'
 
@@ -89,11 +88,8 @@ function getSenderEmail(): string | null {
 
 function observeEmailOpening(rootDiv: HTMLDivElement) {
   
-  
   const container = document.querySelector('div.adn.ads');
   if(container){
-      rootDiv.style.backgroundColor = getBackgroundColor()
-      rootDiv.style.display = 'block';
       run(rootDiv);
       sessionStorage.setItem(sessionStorageShouldRenderUILabel, 'true')
     }
@@ -140,30 +136,21 @@ function extractLinksFromEmailBody(): string[] {
   return links;
 }
 
-function getBackgroundColor(): string {
-
-  let backgroundColor = sessionStorage.getItem(sessionStorageBackgroundColorLabel)
-  if(backgroundColor){
-    return backgroundColor;
-  }
-  let defaultColor = 'green'
-  sessionStorage.setItem(sessionStorageBackgroundColorLabel, defaultColor)
-  
-  return defaultColor
-
-}
-
 function run(rootDiv: HTMLDivElement) {
-  document.body.appendChild(rootDiv);
-  const root = ReactDOM.createRoot(rootDiv);
-  let remetente = getSenderEmail()
-  let linksList = extractLinksFromEmailBody()
-
+  
   let shouldRender = sessionStorage.getItem(sessionStorageShouldRenderUILabel)
   let isRendering = sessionStorage.getItem(sessionStorageIsRenderingUILabel)
-
-
+  
   if(shouldRender === 'true' && !isRendering){
+    let remetente = getSenderEmail()
+    if(!remetente){
+      return
+    }
+    document.body.appendChild(rootDiv);
+    rootDiv.style.display = 'block';
+    const root = ReactDOM.createRoot(rootDiv);
+    let linksList = extractLinksFromEmailBody()
+  
     // console.log()
     root.render(
       <App
@@ -190,10 +177,7 @@ if (!document.getElementById(rootDivId)) {
     top: '50px',
     right: '20px',
     zIndex: '9999',
-    // backgroundColor: 'green',
-    // backgroundColor: 'red',
-    // backgroundColor: 'orange',
-    backgroundColor: getBackgroundColor(),
+    backgroundColor: 'orange',
     width: '20rem',
     // height: '20rem',
     height: 'flex',
@@ -242,6 +226,6 @@ if (!document.getElementById(rootDivId)) {
   // Observa mudanças a cada 100ms
   setInterval(() => {
     observeEmailOpening(rootDiv);
-  }, 500);
+  }, 100);
   
 }

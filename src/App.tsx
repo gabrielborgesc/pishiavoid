@@ -4,7 +4,6 @@ import * as contactService from './ContactService';
 import { Button } from 'primereact/button';
         
 
-const sessionStorageBackgroundColorLabel = 'backgroundColor'
 const trusted = 'trusted'
 const blocked = 'blocked'
 const unsaved = 'unsaved'
@@ -57,10 +56,10 @@ class App extends React.Component<AppProps, AppState> {
 
       contactService.getContact(this.props.remetente).then(async contact => {
         if (contact) {
-          sessionStorage.setItem(sessionStorageBackgroundColorLabel, contact.type === trusted ? 'green' : 'red')
+          this.changeBackGroundColor(contact.type === trusted ? 'green' : 'red')
           await this.setState({contactStatus: contact.type})
         } else {
-          sessionStorage.setItem(sessionStorageBackgroundColorLabel, 'orange')
+          this.changeBackGroundColor('orange')
           await this.setState({contactStatus: unsaved})
         }
 
@@ -75,6 +74,13 @@ class App extends React.Component<AppProps, AppState> {
 
     }
 
+  }
+
+  changeBackGroundColor = (color: string) => {
+    const rootDiv = document.getElementById('pishiavoid-root');
+    if (rootDiv) {
+      rootDiv.style.backgroundColor = color;
+    }
   }
 
   constroiMensagemLinks = () => {
