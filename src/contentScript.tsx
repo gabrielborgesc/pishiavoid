@@ -195,7 +195,8 @@ if (!document.getElementById(rootDivId)) {
     // backgroundColor: 'orange',
     backgroundColor: getBackgroundColor(),
     width: '20rem',
-    height: '20rem',
+    // height: '20rem',
+    height: 'flex',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
     borderRadius: '8px',
     cursor: 'move', // permite arrastar

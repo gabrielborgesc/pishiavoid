@@ -9,6 +9,10 @@ const trusted = 'trusted'
 const blocked = 'blocked'
 const unsaved = 'unsaved'
 
+const trustedLabel = 'TRUSTED'
+const blockedLabel = 'BLOCKED'
+const newLabel = 'NEW'
+
 type AppProps = {
   remetente?: string; // opcional — pode ser omitido
   linksList?: string[]; // opcional — pode ser omitido
@@ -17,6 +21,7 @@ type AppProps = {
 type AppState = {
   contactStatus?: string;
   callApi?: boolean;
+  similarSenders?: contactService.Contact[]
 };
 
 // class App extends Component<AppProps> {
@@ -62,6 +67,7 @@ class App extends React.Component<AppProps, AppState> {
         contactService.findSimilarContacts(this.props.remetente!).then(similars => {
           // console.log("contatos similares: ", similars)
           if (similars.length > 0) {
+            this.setState({similarSenders: similars})
             // console.log("Sender looks similar to:", similars.map(s => s.email));
           }
         });
@@ -72,7 +78,7 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   constroiMensagemLinks = () => {
-    let linksMessage = `Links presentes no email:\n\n`;
+    let linksMessage = `Links present in the email:\n\n`;
 
     this.props.linksList?.forEach(link => {
       linksMessage += `- ${link}\n\n`;
@@ -109,24 +115,44 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   getContactStatus = () => {
-    let statusMessage = "Este é um remetente "
+    let statusMessage = "This is a "
       switch(this.state.contactStatus){
         
         case unsaved:
-          statusMessage += "NOVO"
+          statusMessage += newLabel
           break
 
         case trusted:
-          statusMessage += "SALVO"
+          statusMessage += trustedLabel
           break
 
         case blocked:
-          statusMessage += "BLOQUEADO"
+          statusMessage += blockedLabel
           break
 
       }
 
-    return statusMessage
+    return statusMessage += " sender"
+  }
+
+  getSimilarTrustedSenders = () => {
+    let message = `Simliar ${trustedLabel} senders: \n`
+    this.state.similarSenders?.forEach(similarSender => {
+      if(similarSender.type === trusted){
+        message += `- ${similarSender.email}\n`
+      }
+    })
+    return message
+  }
+
+  getSimilarBlockedSenders = () => {
+    let message = `Simliar ${blockedLabel} senders: \n`
+    this.state.similarSenders?.forEach(similarSender => {
+      if(similarSender.type === blocked){
+        message += `- ${similarSender.email}\n`
+      }
+    })
+    return message
   }
 
   render() {
@@ -165,12 +191,41 @@ class App extends React.Component<AppProps, AppState> {
               margin: "10px",
             }}
           >
-            {`Remetente: ${this.props.remetente}`}
+            {`Sender: ${this.props.remetente}`}
           </div>
         )
       }
     }
 
+    const renderSimilarSendersComponent = (message: string) => {
+        return (
+          <div
+            id="phishiavoid-info"
+            style={{
+              backgroundColor: "#333",
+              color: "white",
+              padding: "8px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              margin: "10px",
+              whiteSpace: "pre-wrap",       //<-- ESSENCIAL PARA '\n' FUNCIONAR
+            }}
+          >
+            {message}
+          </div>
+        )
+    }
+
+    const renderSimilarSenders = () => {
+      if(this.props.remetente && this.state.contactStatus === unsaved){
+        return (
+          <>
+            {renderSimilarSendersComponent(this.getSimilarTrustedSenders())}
+            {renderSimilarSendersComponent(this.getSimilarBlockedSenders())}
+          </>
+        )       
+      }
+    }
 
     const renderButton = (title: string, color: string, icon: any, action: any) => {
       return (
@@ -293,9 +348,10 @@ class App extends React.Component<AppProps, AppState> {
 
       return (
         <div className="App">
-            {renderContactStatus()}
             {renderRemetente()}
+            {renderContactStatus()}
             {renderButtons()}
+            {renderSimilarSenders()}
             {renderLinks()}
         </div>
       );
