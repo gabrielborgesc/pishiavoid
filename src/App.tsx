@@ -108,7 +108,48 @@ class App extends React.Component<AppProps, AppState> {
     )
   }
 
+  getContactStatus = () => {
+    let statusMessage = "Este é um remetente "
+      switch(this.state.contactStatus){
+        
+        case unsaved:
+          statusMessage += "NOVO"
+          break
+
+        case trusted:
+          statusMessage += "SALVO"
+          break
+
+        case blocked:
+          statusMessage += "BLOQUEADO"
+          break
+
+      }
+
+    return statusMessage
+  }
+
   render() {
+
+    const renderContactStatus = () => {
+      if(this.props.remetente){
+        return (
+          <div
+            id="phishiavoid-info"
+            style={{
+              backgroundColor: "#333",
+              color: "white",
+              padding: "8px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              margin: "10px",
+            }}
+          >
+            {this.getContactStatus()}
+          </div>
+        )
+      }
+    }
 
     const renderRemetente = () => {
       if(this.props.remetente){
@@ -252,6 +293,7 @@ class App extends React.Component<AppProps, AppState> {
 
       return (
         <div className="App">
+            {renderContactStatus()}
             {renderRemetente()}
             {renderButtons()}
             {renderLinks()}
