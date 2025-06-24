@@ -46,7 +46,7 @@ export async function deleteContact(email: string): Promise<void> {
   chrome.storage.local.set({ [STORAGE_KEY]: contacts });
 }
 
-export async function findSimilarContacts(email: string, maxDistance = 6): Promise<Contact[]> {
+export async function findSimilarContacts(email: string, maxDistance = 4): Promise<Contact[]> {
     const contacts = await getAllContacts();
     const baseEmail = email.split('@')[0];  // pega só a parte antes do @
 
@@ -79,5 +79,7 @@ function levenshteinDistance(a: string, b: string): number {
     }
   }
 
-  return dp[a.length][b.length];
+  let distance = dp[a.length][b.length]
+  // console.log("comparando ", a, " com ", b, " distance ", distance)
+  return distance;
 }

@@ -20,7 +20,8 @@ type AppProps = {
 type AppState = {
   contactStatus?: string;
   callApi?: boolean;
-  similarSenders?: contactService.Contact[]
+  similarSenders?: contactService.Contact[],
+  hiden?: boolean,
 };
 
 // class App extends Component<AppProps> {
@@ -33,6 +34,7 @@ class App extends React.Component<AppProps, AppState> {
     this.state ={
       contactStatus: unsaved,
       callApi: false,
+      hiden: false
     }
 
   }  
@@ -161,6 +163,10 @@ class App extends React.Component<AppProps, AppState> {
     return message
   }
 
+  handleClose = () => {
+    this.setState({hiden: true})
+  }
+
   render() {
 
     const renderContactStatus = () => {
@@ -272,7 +278,7 @@ class App extends React.Component<AppProps, AppState> {
             marginTop: "8px",
           }}
         >
-          {renderButton("Desbloquear", "#2980b9", '🔓', this.handleDelete)}
+          {renderButton("Unlock", "#2980b9", '🔓', this.handleDelete)}
 
         </div>        
       )
@@ -289,7 +295,7 @@ class App extends React.Component<AppProps, AppState> {
           }}
         >
 
-          {renderButton("Remover Contato", "#e74c3c", "⛔", this.handleDelete)}
+          {renderButton("Remove Contact", "#e74c3c", "⛔", this.handleDelete)}
 
         </div>        
       )      
@@ -306,8 +312,8 @@ class App extends React.Component<AppProps, AppState> {
           }}
         >
 
-          {renderButton("Salvar Contato", "#2ecc71", '✅', this.handleSave)}
-          {renderButton("Bloquear Contato", "#e74c3c", "⛔", this.handleBlock)}
+          {renderButton("Trust Contact", "#2ecc71", '✅', this.handleSave)}
+          {renderButton("Block Contact", "#e74c3c", "⛔", this.handleBlock)}
 
         </div>
       );
@@ -348,12 +354,33 @@ class App extends React.Component<AppProps, AppState> {
           </div>
         );
       }
-    }    
+    }
+
+    const renderCloseButton = () => {
+      return (
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "2px" }}>
+          <button
+            onClick={this.handleClose}
+            style={{
+              background: "transparent",
+              border: "none",
+              fontSize: "16px",
+              color: "white",
+              cursor: "pointer",
+            }}
+            title="Close"
+          >
+            ✖
+          </button>
+        </div>
+      )
+    }
 
     const renderBody = () => {
-
+      if(!this.state.hiden)
       return (
         <div className="App">
+            {renderCloseButton()}
             {renderRemetente()}
             {renderContactStatus()}
             {renderButtons()}
