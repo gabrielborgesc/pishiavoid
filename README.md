@@ -4,7 +4,7 @@ PhishiAvoid is a lightweight and effective extension for Gmail that helps you av
 
 ---
 
-## 🚀 Quick Install (Recommended)
+## 🚀 Quick Install (Just to use)
 
 You can install **PhishiAvoid** directly from the Chrome Web Store:  
 👉 [**Click here to install**](https://chromewebstore.google.com/detail/phishiavoid/anmniialomnomcmibngpplkjcffkalip?utm_source=ext_app_menu)
@@ -13,18 +13,65 @@ Or simply search for **"PhishiAvoid"** in the Chrome Web Store.
 
 ---
 
-## 🔧 How to install locally
+## 🔧 Local Development
 
-To use PhishiAvoid locally (e.g. for development or testing):
+To develop and test the PhishiAvoid extension locally, follow the steps below:
 
-1. Go to the [Releases](https://github.com/gabrielborgesc/pishiavoid/releases) section of this repository.
-2. Download the latest release file named `phishiavoid.zip`.
-3. Extract the contents of the ZIP file to a folder on your computer.
-4. Open Chrome and go to `chrome://extensions/`.
-5. Enable **Developer Mode** (toggle in the top right).
-6. Click **"Load unpacked"** and select the folder where you extracted the ZIP.
+### Prerequisites
 
-> ✅ That’s it! The extension will now be active in Gmail.
+Before starting, make sure you have installed on your machine:
+
+- Node.js (recommended version 16.x LTS)  
+- npm (usually comes bundled with Node.js)  
+- React (already listed as a project dependency and will be installed via npm)  
+
+> **Tip:** We recommend using [nvm (Node Version Manager)](https://github.com/nvm-sh/nvm) to install and manage multiple Node.js versions on your system. To install Node.js 16, for example, run:
+
+````bash
+nvm install 16
+nvm use 16
+````
+
+### Steps to run in development mode
+
+1. Clone this repository:
+
+    ```bash
+    git clone https://github.com/gabrielborgesc/pishiavoid.git
+    cd pishiavoid
+    ```
+
+2. Install the project dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Start Webpack in watch mode to automatically compile changes:
+
+    ```bash
+    npm run watch
+    ```
+
+    This will make Webpack watch for code changes and output the compiled files to the `dist` folder.
+
+4. Open Google Chrome and go to the extensions page:
+
+    ```
+    chrome://extensions/
+    ```
+
+5. Enable **Developer Mode** (toggle in the top right corner).
+
+6. Click **Load unpacked** and select the `dist` folder inside your project.
+
+---
+
+### Important note
+
+Whenever you make changes to the source code, Webpack will automatically recompile. To see the updates in Chrome, return to the `chrome://extensions/` page and click the **Refresh** button (refresh icon) on the loaded extension.
+
+
 
 ---
 
